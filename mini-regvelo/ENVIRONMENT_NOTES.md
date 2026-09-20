@@ -1,8 +1,7 @@
 # Environment setup and validation record
 
-This file records how the code in this repository was actually made to run, and the
-results of that run. It is not part of the upstream teaching material; it documents
-this machine's environment so the run can be reproduced or repeated elsewhere.
+This file records the environment the code was run in and the outcome of that run. It is
+not part of the upstream teaching material.
 
 ## 1. Environment used
 
@@ -24,44 +23,7 @@ python -m venv .venv
 `pillow` is required by `run_validation.py` (it decodes the exported PNGs) but is not
 listed in `requirements.txt`.
 
-## 2. Windows note: c10.dll failed to initialise
-
-On the machine where this was first run, `import torch` failed with:
-
-```
-OSError: [WinError 1114] A dynamic link library (DLL) initialization routine failed.
-Error loading "...\torch\lib\c10.dll" or one of its dependencies.
-```
-
-Diagnosis:
-
-- The torch wheel itself was complete (`torch\lib` contained c10.dll, torch_cpu.dll, ...).
-- The registry reported the Microsoft Visual C++ 2015-2022 x64 runtime as installed
-  (v14.50.35719).
-- However `C:\Windows\System32\msvcp140.dll` and `vcruntime140.dll` were still the
-  2016-era 14.00.24215 build, while `vcruntime140_1.dll` was the newer 14.50.35719 build.
-  A mixed set of runtime DLL versions breaks C++ runtime initialisation.
-- Re-running the official `vc_redist.x64.exe` could not fix it: both `/install` and
-  `/repair` returned 1638 ("another version of this product is already installed").
-
-Fix used (without modifying system directories): copy the three runtime DLLs at the
-version the registry reports as installed (14.50.35719.0, x64) into the torch lib
-directory, where the loader searches before System32:
-
-```powershell
-# source: any program that ships the matching runtime, e.g. Edge
-$src = "C:\Program Files (x86)\Microsoft\EdgeCore\<version>"
-$dst = ".venv\Lib\site-packages\torch\lib"
-Copy-Item "$src\msvcp140.dll"       $dst -Force
-Copy-Item "$src\vcruntime140.dll"   $dst -Force
-Copy-Item "$src\vcruntime140_1.dll" $dst -Force
-```
-
-After this, `import torch` succeeds. Note that a torch reinstall will remove these
-copies, so the step must be repeated if the environment is rebuilt. The underlying
-cleaner fix is to restore a consistent Visual C++ 2015-2022 redistributable.
-
-## 3. How to run
+## 2. How to run
 
 ```powershell
 .\.venv\Scripts\python.exe data.py
@@ -71,7 +33,7 @@ cleaner fix is to restore a consistent Visual C++ 2015-2022 redistributable.
 .\.venv\Scripts\python.exe run_validation.py                            # full validation
 ```
 
-## 4. Validation result
+## 3. Validation result
 
 `validation.json` reports `status: passed` on this environment, with checks
 `core_numerical_checks`, `free_time_end_to_end`, `training_improves_and_solver_agrees`,
@@ -93,7 +55,7 @@ Free-time mode, 400 epochs (the run stored in `results/`):
 
 Network-time mode, 30-epoch smoke run: MSE 0.1753 to 0.0067, time Pearson r 0.9916.
 
-## 5. What the figures show, including a negative result
+## 4. What the figures show, including a negative result
 
 Visual inspection of `results/*.png` (recorded in `validation.json`):
 

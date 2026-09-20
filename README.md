@@ -19,9 +19,9 @@ What is in it:
   and weight gradients, the prior mask, and the knockout logic.
 - A 400-epoch validation run with its metrics, training history, six diagnostic figures
   and the trained model checkpoint.
-- [`mini-regvelo/ENVIRONMENT_NOTES.md`](mini-regvelo/ENVIRONMENT_NOTES.md): how the
-  environment was set up, a Windows runtime-DLL problem that prevented `import torch`,
-  and a summary of what the figures do and do not show.
+- [`mini-regvelo/ENVIRONMENT_NOTES.md`](mini-regvelo/ENVIRONMENT_NOTES.md): the
+  environment it was run in, the validation result, and a summary of what the figures do
+  and do not show.
 - [`mini-regvelo/README.md`](mini-regvelo/README.md): module-by-module description of
   the code, the mathematics behind each file, and an explicit list of the places where
   this teaching version simplifies the published model.
