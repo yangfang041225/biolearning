@@ -1,18 +1,17 @@
-# Environment setup and validation record
+# 环境与验证记录
 
-This file records the environment the code was run in and the outcome of that run. It is
-not part of the upstream teaching material.
+本文件记录代码实际运行的环境，以及那次运行的结果。它不属于上游教学材料。
 
-## 1. Environment used
+## 1. 使用的环境
 
-- Python 3.13.14 (Windows x64)
+- Python 3.13.14（Windows x64）
 - torch 2.14.0+cpu
 - torchdiffeq 0.2.5
 - numpy 2.5.3
 - matplotlib 3.11.2
 - pillow 12.3.0
 
-Command to reproduce:
+复现环境的命令：
 
 ```powershell
 python -m venv .venv
@@ -20,71 +19,71 @@ python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt pillow
 ```
 
-`pillow` is required by `run_validation.py` (it decodes the exported PNGs) but is not
-listed in `requirements.txt`.
+`pillow` 是 `run_validation.py` 需要的（它要解码导出的 PNG 检查完整性），
+但没有列在 `requirements.txt` 里。
 
-## 2. How to run
+## 2. 如何运行
 
 ```powershell
 .\.venv\Scripts\python.exe data.py
 .\.venv\Scripts\python.exe transcription.py
 .\.venv\Scripts\python.exe -m unittest -v test_core
-.\.venv\Scripts\python.exe main.py --epochs 20 --output results_smoke   # quick smoke
-.\.venv\Scripts\python.exe run_validation.py                            # full validation
+.\.venv\Scripts\python.exe main.py --epochs 20 --output results_smoke   # 快速冒烟
+.\.venv\Scripts\python.exe run_validation.py                            # 完整验证
 ```
 
-## 3. Validation result
+## 3. 验证结果
 
-`validation.json` reports `status: passed` on this environment, with checks
-`core_numerical_checks`, `free_time_end_to_end`, `training_improves_and_solver_agrees`,
-`network_time_smoke_30_epochs`, `plot_files_decode`.
+`validation.json` 在这个环境下报告 `status: passed`，包含的检查项为
+`core_numerical_checks`、`free_time_end_to_end`、`training_improves_and_solver_agrees`、
+`network_time_smoke_30_epochs`、`plot_files_decode`。
 
-All six unit tests in `test_core.py` pass, including the analytic-solution check and
-the finite-difference checks of the time and weight gradients.
+`test_core.py` 中六个单元测试全部通过，其中包括解析解对照，
+以及时间梯度与权重梯度的有限差分检验。
 
-Free-time mode, 400 epochs (the run stored in `results/`):
+free 时间模式、训练 400 轮（`results/` 中保存的那次运行）：
 
-| quantity | value |
+| 指标 | 数值 |
 |---|---|
-| reconstruction MSE sum, epoch 1 | 0.081504 |
-| reconstruction MSE sum, epoch 400 | 0.000201 |
-| learned vs. generating time, Pearson r | 0.9914 |
-| W RMSE over all entries | 0.4278 |
-| max state error, 48 vs. 96 RK4 steps | 2.4e-07 |
-| max state error, RK4 vs. dopri5 | 6.0e-07 |
+| 重建 MSE 总和，第 1 轮 | 0.081504 |
+| 重建 MSE 总和，第 400 轮 | 0.000201 |
+| 学习时间与生成时间的 Pearson r | 0.9914 |
+| W 的全部元素 RMSE | 0.4278 |
+| 最大状态误差，48 步 vs 96 步 RK4 | 2.4e-07 |
+| 最大状态误差，RK4 vs dopri5 | 6.0e-07 |
 
-Network-time mode, 30-epoch smoke run: MSE 0.1753 to 0.0067, time Pearson r 0.9916.
+network 时间模式、30 轮冒烟运行：MSE 从 0.1753 降到 0.0067，时间 Pearson r 为 0.9916。
 
-## 4. What the figures show, including a negative result
+## 4. 这些图说明了什么（含一个负面结果）
 
-Visual inspection of `results/*.png` (recorded in `validation.json`):
+对 `results/*.png` 的目视检查结论（也记录在 `validation.json` 中）：
 
-- `loss.png` decreases monotonically on a log scale; the total objective and the
-  reconstruction MSE are almost identical, so the penalty term is negligible here.
-- `reconstruction.png` shows the ODE curves passing through the observed points in all
-  six panels: the fitted dynamics explain the observations very well.
-- `latent_time.png` shows the learned time is monotone in the generating time but not
-  equal to it: the mapping is nonlinear and saturates near `t_max`. The time axis is
-  therefore only identified up to a monotone reparameterisation.
-- `grn.png` is the important negative result. Only one edge is recovered:
+- `loss.png` 在对数坐标下单调下降；总目标与重建 MSE 几乎重合，
+  说明惩罚项在本次运行中可忽略。
+- `reconstruction.png` 的六个面板中，ODE 曲线都穿过观测散点：
+  拟合出的动力学很好地解释了观测。
+- `latent_time.png` 显示学习到的时间相对生成时间是单调的，但并不相等：
+  映射是非线性的，并在 `t_max` 附近饱和。也就是说，时间轴只能被确定到
+  “相差一个单调重参数化”的程度。
+- `grn.png` 是最重要的负面结果。三条真实调控边只找回了一条：
 
-  | edge | generating W | learned W |
+  | 边 | 生成用的 W | 学到的 W |
   |---|---|---|
   | A -> B | +1.20 | +0.46 |
   | A -> C | +0.60 | -0.04 |
   | B -> C | -0.80 | +0.03 |
 
-  Reconstruction MSE reaches 2e-4 while two of the three true edges stay near zero.
-  A low reconstruction error does **not** imply recovery of the generating GRN, which
-  is exactly the identifiability problem discussed in section 7 of `README.md`. In the
-  full RegVelo model this is addressed by variational inference plus the dynamics
-  regularisation of Equations 6-8, which this teaching version replaces with plain MSE.
-- `velocity.png` correlates with the generating velocity but deviates in a
-  time-scale-dependent way, as expected given the time reparameterisation above.
-- `perturbation.png` shows that deleting the A regulon lowers B (the one recovered
-  edge) and leaves A and C unchanged; C is unchanged because the learned weights into C
-  are near zero. The quality of a simulated knockout therefore depends on the learned
-  GRN, not on how well the model reconstructs the data.
+  重建 MSE 已降到 2e-4，而三条真实边里有两条仍接近零。
+  低重建误差**并不**意味着还原出了真实的基因调控网络；这正是
+  `README.md` 第 7 节讨论的可辨识性问题。在论文的完整 RegVelo 中，
+  这个问题由变分推断加上 Equation 6–8 的动力学正则共同处理，
+  而本教学版把这些替换成了朴素的 MSE。
+- `velocity.png` 与生成用的速度相关，但存在系统性偏差，
+  且偏差随速度大小/时间尺度变化——这在上述时间重参数化的前提下是预期的。
+- `perturbation.png` 显示删除 A 的调控列会压低 B（唯一被找回的那条边），
+  而 A 与 C 不变；C 不变是因为学到的指向 C 的权重接近零。
+  也就是说，模拟敲除效果的好坏取决于学到的调控网络，
+  而不取决于模型把数据重建得多好。
 
-The `results_network_smoke/` folder produced by `run_validation.py` is excluded from
-this repository by `.gitignore`; it is a 30-epoch smoke run, not a converged result.
+`run_validation.py` 生成的 `results_network_smoke/` 目录被 `.gitignore` 排除在本仓库之外；
+它是一次 30 轮的冒烟运行，不是收敛结果。

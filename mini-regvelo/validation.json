@@ -8,7 +8,7 @@
     "plot_files_decode"
   ],
   "python": "3.13.14 (main, Jun 11 2026, 04:04:46) [MSC v.1944 64 bit (AMD64)]",
-  "visual_review": "Completed 2026-09-20: all six PNGs inspected after the passed run. loss decays monotonically (0.0815 to 0.0002, log scale). Reconstruction: ODE curves pass through observed scatter in all six panels. Latent time: monotone vs ground truth (r=0.991) but nonlinear, saturating near t_max at late cells, i.e. the time axis is only identified up to a monotone reparameterisation. Learned W recovers only A->B (+0.46 vs +1.20 truth); A->C and B->C remain near zero (truth +0.60 and -0.80). Velocity correlates with truth but deviates in a time-scale-dependent way. KO of A lowers B as expected, leaves A and C unchanged, consistent with the unrecovered edges. Conclusion: low reconstruction MSE does not imply recovery of the generating GRN.",
+  "visual_review": "已于 2026-09-20 完成：在验证通过的那次运行后，逐张检查了全部六张 PNG。loss 在对数坐标下单调下降（0.0815 降到 0.0002）。重建：六个面板中 ODE 曲线均穿过观测散点。潜时间：相对真值单调（r=0.991）但非线性，晚期在 t_max 附近饱和，即时间轴只能确定到相差一个单调重参数化的程度。学到的 W 只找回了 A->B（+0.46，真值 +1.20）；A->C 与 B->C 仍接近零（真值 +0.60 与 -0.80）。velocity 与真值相关，但偏差随时间尺度变化。敲除 A 会按预期压低 B，而 A 与 C 不变，这与未能找回的边一致。结论：低重建 MSE 不等于找回了生成数据的真实调控网络。",
   "metrics": {
     "initial_reconstruction_mse_sum": 0.08150406554341316,
     "final_reconstruction_mse_sum": 0.00020077600493095815,
@@ -16,6 +16,6 @@
     "W_rmse_all_entries": 0.42778587341308594,
     "max_state_error_step_doubling": 2.384185791015625e-07,
     "max_state_error_vs_dopri5": 5.960464477539062e-07,
-    "note": "Training reconstruction only. No posterior uncertainty; parameters not uniquely identifiable."
+    "note": "本记录仅反映训练集上的重建效果；未实现后验不确定性；参数不具备唯一可辨识性。"
   }
 }

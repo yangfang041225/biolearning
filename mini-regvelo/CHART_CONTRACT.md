@@ -1,21 +1,21 @@
-# Teaching diagnostic plots
+# 教学诊断图说明
 
-Surface: exported PNGs, reproducible Matplotlib renderer; no interactive dashboard.
-Data: this run's synthetic cells (default N=64, G=3), training epochs and 120-point
-simulation grid. No external observational data, calendar dates or biological units.
+呈现方式：导出 PNG 文件，由 Matplotlib 可复现地渲染；没有交互式看板。
+数据来源：本次运行的合成细胞（默认 N=64、G=3）、训练轮数，以及 120 点的模拟时间网格。
+不含外部观测数据、日历日期或生物学单位。
 
-| Question | Plot | Sufficiency and intended reading |
+| 想回答的问题 | 图 | 充分性与预期读法 |
 |---|---|---|
-| Does optimization reduce training error? | loss line chart | >=1 epoch; one epoch gives limited evidence |
-| Does time correspond to generating order? | time scatter | >=4 cells, one point per cell; no fixed claim of recovery |
-| Which weights were fitted? | paired signed heatmaps | 3x3 each, shared scale, signed numeric labels |
-| Do fitted states explain observations? | 2x3 abundance panels | one scatter per cell and ordered fitted line per gene |
-| Are learned velocities consistent with truth? | three scatter plots | matched cell/gene samples; time-scale caveat |
-| What changes after deleting a TF regulon? | 2x3 WT/KO lines | same 120 times and zero initial condition |
+| 优化是否降低了训练误差？ | loss 折线图 | 至少 1 轮；只有 1 轮时证据有限 |
+| 学到的顺序是否对应真实的生成顺序？ | 时间散点图 | 至少 4 个细胞，一个细胞一个点；不宣称必然复原 |
+| 拟合出了哪些权重？ | 两幅带正负号的并列热图 | 各为 3x3，共用色标，标注带符号的数值 |
+| 拟合状态能否解释观测？ | 2x3 丰度面板 | 每个细胞一个散点，每个基因一条按时间排序的拟合曲线 |
+| 学到的速度是否与真值一致？ | 三幅散点图 | 细胞与基因一一对应；注意时间尺度带来的偏差 |
+| 删掉某个 TF 的调控列后有什么变化？ | 2x3 的 WT/KO 曲线 | 使用同一组 120 个时间点与相同的零初值 |
 
-Palette: hard two-root cap (blue #2874A6, orange #D48628), neutral reference lines.
-Use open markers vs solid lines, dashed KO/reference curves, facets and signed labels
-so distinctions do not rely only on color. Heatmap is a signed diverging scale.
-Footprint: 5.5--12 inches wide, 4--7 inches high, 160 DPI. File paths are results/*.png.
-QA: numerical source checks, file decode checks and subsequent exported-image visual
-inspection. The six charts are diagnostics, not evidence of unique parameter recovery.
+配色：严格限制为两个主色（蓝 #2874A6、橙 #D48628），参考线用中性灰。
+空心标记与实线、KO/参考曲线的虚线、分面布局与带符号的数值标注，
+共同保证区分不单纯依赖颜色。热图使用带正负的发散色标。
+版面尺寸：宽 5.5–12 英寸，高 4–7 英寸，160 DPI。文件路径为 results/*.png。
+质量检查：数值来源核对、文件解码检查，以及对导出图像的目视检查。
+这六张图是诊断工具，不能作为“参数被唯一恢复”的证据。
