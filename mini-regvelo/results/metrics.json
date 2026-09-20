@@ -1,0 +1,9 @@
+{
+  "initial_reconstruction_mse_sum": 0.08150406554341316,
+  "final_reconstruction_mse_sum": 0.00020077600493095815,
+  "time_pearson_r": 0.9914319101979182,
+  "W_rmse_all_entries": 0.42778587341308594,
+  "max_state_error_step_doubling": 2.384185791015625e-07,
+  "max_state_error_vs_dopri5": 5.960464477539062e-07,
+  "note": "Training reconstruction only. No posterior uncertainty; parameters not uniquely identifiable."
+}

@@ -1,0 +1,21 @@
+{
+  "status": "passed",
+  "checks": [
+    "core_numerical_checks",
+    "free_time_end_to_end",
+    "training_improves_and_solver_agrees",
+    "network_time_smoke_30_epochs",
+    "plot_files_decode"
+  ],
+  "python": "3.13.14 (main, Jun 11 2026, 04:04:46) [MSC v.1944 64 bit (AMD64)]",
+  "visual_review": "Completed 2026-09-20: all six PNGs inspected after the passed run. loss decays monotonically (0.0815 to 0.0002, log scale). Reconstruction: ODE curves pass through observed scatter in all six panels. Latent time: monotone vs ground truth (r=0.991) but nonlinear, saturating near t_max at late cells, i.e. the time axis is only identified up to a monotone reparameterisation. Learned W recovers only A->B (+0.46 vs +1.20 truth); A->C and B->C remain near zero (truth +0.60 and -0.80). Velocity correlates with truth but deviates in a time-scale-dependent way. KO of A lowers B as expected, leaves A and C unchanged, consistent with the unrecovered edges. Conclusion: low reconstruction MSE does not imply recovery of the generating GRN.",
+  "metrics": {
+    "initial_reconstruction_mse_sum": 0.08150406554341316,
+    "final_reconstruction_mse_sum": 0.00020077600493095815,
+    "time_pearson_r": 0.9914319101979182,
+    "W_rmse_all_entries": 0.42778587341308594,
+    "max_state_error_step_doubling": 2.384185791015625e-07,
+    "max_state_error_vs_dopri5": 5.960464477539062e-07,
+    "note": "Training reconstruction only. No posterior uncertainty; parameters not uniquely identifiable."
+  }
+}
